@@ -1,0 +1,56 @@
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:3.2
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  kafka:
+    image: quay.io/debezium/kafka:3.2
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+    ports:
+      - "9092:9092"
+
+  mysql:
+    image: quay.io/debezium/example-mysql:3.2
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=debezium
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpw
+    ports:
+      - "3306:3306"
+
+  mysqlterm:
+    image: mysql:8.2
+    container_name: mysqlterm
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=debezium
+    stdin_open: true
+    tty: true
+    command: sh -c 'exec mysql -hmysql -P3306 -uroot -p"$MYSQL_ROOT_PASSWORD"'
+
+  connect:
+    image: quay.io/debezium/connect:3.2
+    container_name: connect
+    depends_on:
+      - kafka
+      - mysql
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+    ports:
+      - "8083:8083"
+
+
