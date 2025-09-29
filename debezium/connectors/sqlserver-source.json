@@ -4,8 +4,8 @@
     "connector.class": "io.debezium.connector.sqlserver.SqlServerConnector",
     "database.hostname": "mssql",
     "database.port": "1433",
-    "database.user": "sa",
-    "database.password": "YourStrong!Passw0rd",
+    "database.user": "debezium",
+    "database.password": "Debezium!Passw0rd",
     "database.names": "SuppliersDb",
     "table.include.list": "dbo.Suppliers",
     "database.encrypt": "true",
@@ -13,7 +13,6 @@
     "topic.prefix": "suppliers",
     "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
     "schema.history.internal.kafka.topic": "schema-changes.suppliers",
-    "signal.data.collection": "dbo.DebeziumSignals",
     "snapshot.mode": "initial",
     "include.schema.changes": "false"
   }

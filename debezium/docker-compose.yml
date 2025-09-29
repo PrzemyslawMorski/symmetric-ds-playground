@@ -29,10 +29,10 @@ services:
       - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - ENABLE_DEBEZIUM_SCRIPTING=true
-      - KAFKA_HEAP_OPTS=-Xms8g -Xmx8g
+      - KAFKA_HEAP_OPTS=-Xms256m -Xmx768m
     ports:
       - "8083:8083"
-    mem_limit: 8g
+    mem_limit: 1g
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -40,6 +40,7 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - "14333:1433"
     healthcheck:
