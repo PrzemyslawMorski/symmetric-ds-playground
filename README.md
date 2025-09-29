@@ -8,19 +8,19 @@ Hands-on demos for replicating data from SQL Server to PostgreSQL using two appr
 
 Prerequisites
 -------------
--
+
 - Docker Desktop (WSL2 backend recommended on Windows)
 - PowerShell 7+ (examples use PowerShell)
 
 Repository layout
 -----------------
--
+
 - `debezium/` — Debezium stack (ZooKeeper, Kafka, Connect, SQL Server, PostgreSQL) and connectors
 - `symmetric-ds/` — SymmetricDS with SQL Server and PostgreSQL engines/config
 
 Quick start: Debezium demo
 --------------------------
--
+
 ```powershell
 cd debezium
 docker compose up -d
@@ -44,7 +44,7 @@ Details and troubleshooting: see `debezium/README.md`.
 
 Quick start: SymmetricDS demo
 -----------------------------
--
+
 ```powershell
 cd symmetric-ds
 docker compose up -d
@@ -65,6 +65,7 @@ More commands and configuration notes: see `symmetric-ds/README.md`.
 
 Resetting the demos
 -------------------
+
 From within each demo directory:
 
 ```powershell
@@ -73,7 +74,6 @@ docker compose down -v
 
 Notes
 -----
--
+
 - Default ports: SQL Server `14333`, PostgreSQL `15433`, Debezium Connect `8083`, SymmetricDS `31415`, pgAdmin `5050` (if applicable).
 - Credentials and connection strings are demo defaults; adjust for production use.
-
