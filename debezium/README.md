@@ -31,8 +31,8 @@ Invoke-RestMethod -Method Post -ContentType 'application/json' -Uri http://local
 docker exec -it demo_mssql /opt/mssql-tools18/bin/sqlcmd -C -No -S localhost -U sa -P YourStrong!Passw0rd -Q "INSERT INTO SuppliersDb.dbo.Suppliers (Id, Name, Active) VALUES (NEWID(), 'Probe via Debezium', 1)"
 
 # Verify on Postgres (table auto-created by sink)
-docker exec -it demo_postgres psql -U postgres -d suppliers_replica -c "\dt"
-docker exec -it demo_postgres psql -U postgres -d suppliers_replica -c 'SELECT * FROM "suppliers_suppliersdb_dbo_suppliers";'  # topic-derived naming
+docker exec -it demo_postgres psql -U postgres -d suppliers_replica -c '\dt'
+docker exec -it demo_postgres psql -U postgres -d suppliers_replica -c 'SELECT * FROM "suppliers_suppliersdb_dbo_suppliers";'
 ```
 
 Inspect Kafka events
@@ -57,6 +57,15 @@ docker exec -it demo_mssql /opt/mssql-tools18/bin/sqlcmd -C -No -S localhost -U 
 # Then retry connector registration
 Invoke-RestMethod -Method Post -ContentType 'application/json' -Uri http://localhost:8083/connectors -InFile ./connectors/sqlserver-source.json
 ```
+
+Troubleshooting
+---------------
+- Connect exited 137: reduce heap and memory in `docker-compose.yml` for `connect` (e.g., `KAFKA_HEAP_OPTS=-Xms256m -Xmx768m`, `mem_limit: 1g`).
+- Kafka CLI not found: use `docker exec -it dbz_kafka bash bin/...` paths.
+- Source validation: if CDC not enabled, run the force-enable command above; then delete/recreate the connector.
+- SQL Server permissions: seed creates `debezium` login, grants `VIEW SERVER STATE`, `db_owner`, and access to `cdc` and `dbo` schemas.
+- Sink registration: use Debezium class `io.debezium.connector.jdbc.JdbcSinkConnector`; for updates via PUT, send only `.config` JSON.
+- Signals NPE: we removed `signal.data.collection` from the source; add later with correct table naming if needed.
 
 Notes
 -----
